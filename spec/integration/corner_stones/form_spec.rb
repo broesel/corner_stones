@@ -157,4 +157,86 @@ describe CornerStones::Form do
       end
     end
   end
+
+  describe "#attributes" do
+    given_the_html <<-HTML
+      <form action="/articles" method="post" class="form-with-errors article-form">
+        <div>
+          <label>Ignored</label>
+          <input type="text" name="ignored" id="ignored" value="I'm ignored" />
+          <label for="title">Title</label>
+          <input type="text" name="title" id="title" value="This is a title" />
+          <label for="color">Color</label>
+          <input type="color" name="color" id="color" value="This is a color" />
+          <label for="date">Date</label>
+          <input type="date" name="date" id="date" value="This is a date" />
+          <label for="datetime">Datetime</label>
+          <input type="datetime" name="datetime" id="datetime" value="This is a datetime" />
+          <label for="datetime-local">Datetime-local</label>
+          <input type="datetime-local" name="datetime-local" id="datetime-local" value="This is a datetime-local" />
+          <label for="datetime-local">Datetime-local</label>
+          <input type="datetime-local" name="datetime-local" id="datetime-local" value="This is a datetime-local" />
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" value="This is a email" />
+          <label for="month">Month</label>
+          <input type="month" name="month" id="month" value="This is a month" />
+          <label for="number">Number</label>
+          <input type="number" name="number" id="number" value="This is a number" />
+          <label for="range">Range</label>
+          <input type="range" name="range" id="range" value="This is a range" />
+          <label for="search">Search</label>
+          <input type="search" name="search" id="search" value="This is a search" />
+          <label for="tel">Tel</label>
+          <input type="tel" name="tel" id="tel" value="This is a tel" />
+          <label for="time">Time</label>
+          <input type="time" name="time" id="time" value="This is a time" />
+          <label for="url">Url</label>
+          <input type="url" name="url" id="url" value="This is a url" />
+          <label for="week">Week</label>
+          <input type="week" name="week" id="week" value="This is a week" />
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" value="This is a password" />
+          <label for="description">Description</label>
+          <textarea name="description" id="description">This is a description</textarea>
+          <label for="author">Author</label>
+          <select name="author" id="author">
+            <option value="1">Robert C. Martin</option>
+            <option value="2" selected>Eric Evans</option>
+            <option value="3">Kent Beck</option>
+          </select>
+          <label for="is_happy">Happy?</label>
+          <input type="checkbox" name="is_happy" id="is_happy" checked="checked" />
+        </div>
+        <input type="submit" value="Save">
+      </form>
+    HTML
+
+    subject { CornerStones::Form.new('.article-form') }
+
+    it "labels with no for-attribute are igrnored" do
+      refute_includes(subject.attributes.values, "I'm ignored")
+    end
+
+    it "should return a hash of labels defined with for-attribute and the values of the connected fields" do
+      subject.attributes.must_equal( {"Title" => "This is a title",
+                                      "Color" => "This is a color",
+                                      "Date" => "This is a date",
+                                      "Datetime" => "This is a datetime",
+                                      "Datetime-local" => "This is a datetime-local",
+                                      "Email" => "This is a email",
+                                      "Month" => "This is a month",
+                                      "Number" => "This is a number",
+                                      "Range" => "This is a range",
+                                      "Search" => "This is a search",
+                                      "Tel" => "This is a tel",
+                                      "Time" => "This is a time",
+                                      "Url" => "This is a url",
+                                      "Week" => "This is a week",
+                                      "Password" => "This is a password",
+                                      "Description" => "This is a description",
+                                      "Author" => "Eric Evans",
+                                      "Happy?" => true})
+    end
+
+  end
 end

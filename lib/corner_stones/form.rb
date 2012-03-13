@@ -58,6 +58,39 @@ module CornerStones
     def file_fields
       @options.fetch(:file_fields) { [] }
     end
-  end
 
+    def attributes
+      attrs = {}
+      page.all("#{@scope} label[for]").each do |label|
+        form_field = page.find("##{label[:for]}")
+        attrs[label.text] = get_value_from form_field
+      end
+      attrs
+    end
+
+    def get_value_from field
+      case field.tag_name
+        when "textarea"
+          field.value
+        when "select"
+          field.find("option[selected]").text
+        else
+          case field[:type]
+            when *input_types
+              field.value
+            when "checkbox"
+              field.checked? == "checked"
+            else
+              raise "Not supported"
+          end
+      end
+    end
+
+    def input_types
+      ["text", "color", "date", "datetime", "datetime-local",
+       "email", "month", "number", "range", "search","tel",
+       "time", "url", "week", "password"]
+    end
+
+  end
 end
